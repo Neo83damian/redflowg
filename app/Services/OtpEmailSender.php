@@ -126,12 +126,30 @@ class OtpEmailSender
 
     protected function fromName(): string
     {
-        return (string) (config('mail.from.name') ?: 'REDFLOW');
+        $name = (string) config('mail.from.name');
+        // Railway doesn't expand a "${APP_NAME}" written in a variable's
+        // value, so it reached Gmail as the literal text "${APP_NAME}" as
+        // the sender name. Fall back to the real name when that happens.
+        if ($name === '' || str_contains($name, '${')) {
+            return (string) (config('app.name') && !str_contains((string) config('app.name'), '${') ? config('app.name') : 'REDFLOW');
+        }
+        return $name;
     }
 
     protected function html(string $code, string $purpose = 'reset'): string
     {
-        return (new OtpMail($code, $purpose))->render();
+        // Built as a plain string on purpose. This used to call
+        // (new OtpMail(...))->render(), and Mailable::render() quietly asks
+        // Laravel for the app's DEFAULT mailer — which is named "brevo" (or
+        // "resend") on Railway. Laravel has no mailer with that name (they
+        // are only switches read by this class), so render() threw
+        // "Mailer [brevo] is not defined" and every verification-code
+        // email failed — while the login-alert emails, which build their
+        // HTML as a plain string too, kept working fine.
+        $what = $purpose === 'change' ? 'change password' : 'password reset';
+        return '<p>Your REDFLOW ' . $what . ' verification code is:</p>'
+            . '<h1 style="letter-spacing:6px;">' . e($code) . '</h1>'
+            . '<p>This code expires in 10 minutes. If you did not request this, you can ignore this email.</p>';
     }
 
     protected function sendViaBrevo(string $to, string $code, string $purpose = 'reset'): void

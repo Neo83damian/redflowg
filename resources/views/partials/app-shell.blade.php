@@ -438,13 +438,12 @@
                 <div style="background:var(--card-bg); padding:25px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06); border:1px solid var(--border-color);">
                     <h2 style="color:var(--primary-red); margin-bottom:15px; text-align:center;"><i class="fa-solid fa-shield-halved"></i> Audit Log</h2>
                     <p style="text-align:center; color:var(--text-muted); margin-bottom:20px; font-size:14px;">Record every Change, Create, Update, Delete, and Export, of donor records and masterlists.</p>
-                    <div class="admin-bulk-bar" id="auditLogBulkBar" style="justify-content:space-between;">
+                    <div class="admin-bulk-bar" id="auditLogBulkBar" style="justify-content:center; gap:24px;">
                         <label style="display:flex; align-items:center; gap:6px; font-size:13px; color:var(--text-muted); cursor:pointer;">
                             <input type="checkbox" class="admin-row-checkbox" id="auditLogSelectAll" onchange="toggleSelectAllAuditLog(this.checked)" style="margin-right:0;"> Select All
                         </label>
                         <div style="display:flex; gap:10px; flex-wrap:wrap;">
                             <button id="auditLogDeleteBtn" class="admin-bulk-delete-btn" onclick="deleteSelectedAuditLogEntries()"><i class="fa-solid fa-trash"></i> DELETE (0)</button>
-                            <button class="admin-bulk-delete-btn" style="background-color:var(--primary-red);" onclick="clearAuditLog()"><i class="fa-solid fa-trash-can"></i> Delete All</button>
                         </div>
                     </div>
                     <div id="auditLogContainer" style="display:flex; flex-direction:column; gap:12px;">
